@@ -107,4 +107,21 @@ class UserTest < ActiveSupport::TestCase
       assert_not michael.feed.include?(post_unfollowed)
     end
   end
+
+  test 'user_name should be present' do
+    @user.user_name = '     '
+    assert_not @user.valid?
+  end
+
+  test 'user_name should not include space' do
+    @user.user_name = 'Include Space'
+    assert_not @user.valid?
+  end
+
+  test 'user_name should be unique' do
+    duplicate_user = @user.dup
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
 end

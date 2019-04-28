@@ -20,7 +20,11 @@ class User < ApplicationRecord
             uniqueness: {case_sensitive: false}
   has_secure_password
   validates :password, presence: true, length: {minimum: 6}, allow_nil: true
-  validates :user_name, presence: true, uniqueness: true, exclusion: {in: [' ', '　']}
+  validates :user_name, presence: true, uniqueness: true, :length => {
+      :maximum => 1,
+      :tokenizer => lambda {|str| str.scan(/\w+/)},
+      :too_long => " must be one word."
+  }
   # 渡された文字列のハッシュ値を返す
   def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
