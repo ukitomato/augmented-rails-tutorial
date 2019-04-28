@@ -23,7 +23,7 @@ class User < ApplicationRecord
   validates :user_name, presence: true, uniqueness: true, :length => {
       :maximum => 1,
       :tokenizer => lambda {|str| str.scan(/\w+/)},
-      :too_long => " must be one word."
+      :too_long => "must be one word."
   }
   # 渡された文字列のハッシュ値を返す
   def self.digest(string)
@@ -87,8 +87,7 @@ class User < ApplicationRecord
   def feed
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
-    Micropost.where("user_id IN (#{following_ids})
-                     OR user_id = :user_id", user_id: id)
+    Micropost.feed(following_ids)
   end
 
   # ユーザーをフォローする
