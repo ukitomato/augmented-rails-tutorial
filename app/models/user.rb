@@ -20,11 +20,8 @@ class User < ApplicationRecord
             uniqueness: {case_sensitive: false}
   has_secure_password
   validates :password, presence: true, length: {minimum: 6}, allow_nil: true
-  validates :user_name, presence: true, uniqueness: true, :length => {
-      :maximum => 1,
-      :tokenizer => lambda {|str| str.scan(/\w+/)},
-      :too_long => "must be one word."
-  }
+  validates :user_name, presence: true, uniqueness: true
+  validate :one_word?
   # 渡された文字列のハッシュ値を返す
   def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -116,5 +113,11 @@ class User < ApplicationRecord
   def create_activation_digest
     self.activation_token = User.new_token
     self.activation_digest = User.digest(activation_token)
+  end
+
+  # user_nameが一単語であるか判定
+  def one_word?
+    tokens = user_name.scan(/\w+/)
+    errors.add(:user_name) if tokens.length != 1
   end
 end
