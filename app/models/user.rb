@@ -84,7 +84,7 @@ class User < ApplicationRecord
   def feed
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
-    Micropost.feed(following_ids)
+    Micropost.including_replies(user_name, id, following_ids)
   end
 
   # ユーザーをフォローする

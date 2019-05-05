@@ -41,11 +41,13 @@ class MicropostTest < ActiveSupport::TestCase
 
   test "in_reply_to shoud be present in reply" do
     @reply.save
-    assert_not @reply.in_reply_to.nil?
+    assert @reply.in_reply_to.present?
   end
 
-  test "in_reply_to shoud be match" do
+  test "reply_user_name shoud be match" do
     @reply.save
-    assert_equal @reply.in_reply_to, User.find_by_user_name('duchess').id
+    assert_equal @reply.reply_user_name, 'duchess'
   end
+
+
 end
