@@ -4,13 +4,13 @@ class Micropost < ApplicationRecord
   scope :feed, ->(user_id, following_ids) {
     where("user_id IN (#{following_ids})
                      OR user_id = :user_id", user_id: user_id)}
-  scope :replies, ->(user_name) {where(in_reply_to: user_name)}
-  scope :including_replies, ->(user_name, user_id, following_ids) {feed(user_id, following_ids).or(replies(user_name))}
+  scope :replies_to, ->(user_id) {where(in_reply_to: user_id)}
+  scope :including_replies, ->(user_id, following_ids) {feed(user_id, following_ids).or(replies_to(user_id))}
   mount_uploader :picture, PictureUploader
   validates :user_id, presence: true
   validates :content, presence: true, length: {maximum: 140}
   validate :picture_size
-  before_save :handle_reply
+  validate :handle_reply
 
 
   private
@@ -23,23 +23,26 @@ class Micropost < ApplicationRecord
   end
 
   # Replyの場合は返信先ユーザと本文を返す（Replyじゃない場合はnil）
-  # @return [user_id, user_name, content]
+  # @return [user_name, content]
   def reply_to
     content = self.content
-    user_name = content[/^@(\w+) (.*)/, 1]
-    content = content[/^@(\w+) (.*)/, 2]
-    user_id = User.find_by_user_name(user_name).id
-    [user_id, user_name, content]
+    if content.include?('@')
+      user_name = content[/^@(\w+) (.*)/, 1]
+      content = content[/^@(\w+) (.*)/, 2]
+      [user_name, content]
+    end
   end
 
-
-  # replyか判定し、replyなら処理
+  # replyか判定し、正しいreplyなら処理
   def handle_reply
-    user_id, user_name, content = reply_to
-    if user_name
-      self.in_reply_to = user_id
-      self.reply_user_name = user_name
-      self.content = content
+    if (user_name, content = reply_to)
+      if (reply_user = User.find_by_user_name(user_name))
+        self.in_reply_to = reply_user.id
+        self.reply_user_name = user_name
+        self.content = content
+      else
+        errors.add(:reply_user_name, "should be correct Username")
+      end
     end
   end
 end
