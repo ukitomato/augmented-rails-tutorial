@@ -28,5 +28,3 @@
 # アップロードされたテスト画像を無視する
 /public/uploads
 
-# Rubocop
-/.rubocop.yml
