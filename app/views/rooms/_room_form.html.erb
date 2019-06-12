@@ -1,0 +1,6 @@
+<li>
+  <%= form_with model: current_user.rooms.build do |f| %>
+    <%= f.collection_select :user_id, User.all, :id, :name %>
+    <%= f.submit "Chat Start", class: "btn  btn-block btn-primary" %>
+  <% end %>
+</li>

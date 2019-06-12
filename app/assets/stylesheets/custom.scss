@@ -317,3 +317,28 @@ span.picture {
     border: 0;
   }
 }
+
+.rooms {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding: 5px 0;
+    border-top: 1px solid #e8e8e8;
+  }
+
+  .room {
+    font-size: 2em;
+    margin-top: 0.5em;
+    padding-top: 0;
+  }
+
+
+  .timestamp {
+    color: $gray-light;
+    display: block;
+    margin-left: 20px;
+  }
+
+
+}
