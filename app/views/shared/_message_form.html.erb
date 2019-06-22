@@ -1,0 +1,29 @@
+<%= form_for(@message) do |f| %>
+  <%= f.hidden_field :room_id, :value => @room.id %>
+  <div class="row">
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="col-md-6">
+      <%= f.text_area :content, placeholder: "Compose new message..." %>
+    </div>
+    <div class="col-md-2">
+      <%= f.submit "Post", class: "btn  btn-block btn-primary" %>
+    </div>
+
+    <div class="col-md-8">
+      <span class="picture">
+        <%= f.file_field :picture, accept: 'image/jpeg,image/gif,image/png' %>
+      </span>
+    </div>
+
+  </div>
+
+<% end %>
+
+<script type="text/javascript">
+    $('#micropost_picture').bind('change', function () {
+        var size_in_megabytes = this.files[0].size / 1024 / 1024;
+        if (size_in_megabytes > 5) {
+            alert('Maximum file size is 5MB. Please choose a smaller file.');
+        }
+    });
+</script>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   get 'password_resets/new'
 
   get 'password_resets/edit'
@@ -10,6 +11,8 @@ Rails.application.routes.draw do
   get '/about', to: 'static_pages#about'
   get '/contact', to: 'static_pages#contact'
   get '/signup', to: 'users#new'
+  get '/messages', to: 'rooms#show'
+  get '/rooms', to: 'rooms#index'
 
   post '/signup', to: 'users#create'
 
@@ -24,6 +27,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :rooms
   resources :account_activations, only: [:edit]
   resources :password_resets, only: [:new, :create, :edit, :update]
   resources :microposts, only: [:create, :destroy]

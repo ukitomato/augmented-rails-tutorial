@@ -1,0 +1,39 @@
+<% provide(:title, current_user.name) %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <h1>
+        <%= gravatar_for current_user %>
+        <%= link_to current_user.name, current_user %>
+      </h1>
+      <p><%= link_to '@' + current_user.user_name, current_user %></p>
+    </section>
+
+    <section class="room_index">
+      <ul class="rooms">
+        <%= render 'room_form' %>
+        <%= render @rooms %>
+      </ul>
+      <%= will_paginate @rooms %>
+    </section>
+  </aside>
+  <div class="col-md-8">
+    <div class="row">
+      <% if @room.present? %>
+        <div class="col">
+          <h3>Messages (<%= @room.microposts.count %>)</h3>
+          <ol class="microposts">
+            <%= render @messages %>
+          </ol>
+          <%= will_paginate @messages %>
+        </div>
+        <div class="col">
+          <section class="message_form">
+            <%= render 'shared/message_form' %>
+          </section>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>

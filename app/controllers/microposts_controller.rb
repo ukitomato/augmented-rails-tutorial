@@ -5,12 +5,18 @@ class MicropostsController < ApplicationController
   def create
     @micropost = current_user.microposts.build(micropost_params)
     if @micropost.save
-      flash[:success] = if @micropost.in_reply_to.present?
-                          'Reply created!'
-                        else
-                          'Micropost created!'
-                        end
-      redirect_to root_url
+      if @micropost.room_id.present?
+        flash[:success] = 'Message created!'
+        redirect_to request.referer
+      else
+        flash[:success] = if @micropost.in_reply_to.present?
+                            'Reply created!'
+                          else
+                            'Micropost created!'
+                          end
+
+        redirect_to root_url
+      end
     else
       @feed_items = current_user.feed.paginate(page: params[:page])
       render 'static_pages/home'
@@ -20,13 +26,13 @@ class MicropostsController < ApplicationController
   def destroy
     @micropost.destroy
     flash[:success] = 'Micropost deleted'
-    redirect_to request.referrer || root_url
+    redirect_to request.referer || root_url
   end
 
   private
 
   def micropost_params
-    params.require(:micropost).permit(:content, :picture)
+    params.require(:micropost).permit(:content, :picture, :room_id)
   end
 
   def correct_user

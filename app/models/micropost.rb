@@ -1,8 +1,10 @@
 class Micropost < ApplicationRecord
   belongs_to :user
+  belongs_to :room, optional: true
   default_scope -> {order(created_at: :desc)}
+  scope :microposts, -> {where(room_id: nil)}
   scope :feed, ->(user_id, following_ids) {
-    where("user_id IN (#{following_ids})
+    microposts.where("user_id IN (#{following_ids})
                      OR user_id = :user_id", user_id: user_id)}
   scope :replies_to, ->(user_id) {where(in_reply_to: user_id)}
   scope :including_replies, ->(user_id, following_ids) {feed(user_id, following_ids).or(replies_to(user_id))}
@@ -45,4 +47,5 @@ class Micropost < ApplicationRecord
       end
     end
   end
+
 end

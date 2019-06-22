@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190505012655) do
+ActiveRecord::Schema.define(version: 20190525075709) do
 
   create_table "microposts", force: :cascade do |t|
     t.text "content"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20190505012655) do
     t.string "picture"
     t.integer "in_reply_to"
     t.string "reply_user_name"
+    t.integer "room_id"
+    t.index ["room_id"], name: "index_microposts_on_room_id"
     t.index ["user_id", "created_at"], name: "index_microposts_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_microposts_on_user_id"
   end
@@ -32,6 +34,19 @@ ActiveRecord::Schema.define(version: 20190505012655) do
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+  end
+
+  create_table "rooms_users", force: :cascade do |t|
+    t.integer "room_id"
+    t.integer "user_id"
+    t.index ["room_id"], name: "index_rooms_users_on_room_id"
+    t.index ["user_id"], name: "index_rooms_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

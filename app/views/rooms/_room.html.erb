@@ -1,0 +1,11 @@
+<li id="room-<%= room.id %>">
+  <span class="room"><%= link_to room.name, room %></span>
+  <span class="timestamp">
+    Updated <%= time_ago_in_words(room.updated_at) %> ago.
+    <span class="delete">
+      <%= link_to "delete", room, method: :delete,
+                  data: {confirm: "You sure?"} %>
+    </span>
+
+  </span>
+</li>
